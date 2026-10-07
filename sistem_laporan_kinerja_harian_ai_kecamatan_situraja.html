@@ -1,0 +1,1077 @@
+<!DOCTYPE html>
+<html lang="id" class="h-full bg-slate-50">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-LKH AI - Kecamatan Situraja Kabupaten Sumedang</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Font Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0f7ff',
+                            100: '#e0effe',
+                            500: '#0284c7',
+                            600: '#0369a1',
+                            700: '#075985',
+                            800: '#0c4a6e',
+                            900: '#0a3751',
+                        },
+                        sumedang: {
+                            gold: '#d97706',
+                            green: '#15803d',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .print-only { display: none; }
+        @media print {
+            .no-print { display: none !important; }
+            .print-only { display: block !important; }
+            body { background-color: #fff; color: #000; }
+            .print-card { border: none !important; shadow: none !important; padding: 0 !important; }
+        }
+    </style>
+</head>
+<body class="h-full text-slate-800 flex flex-col min-h-screen">
+
+    <!-- Header Utama -->
+    <header class="bg-gradient-to-r from-brand-900 via-brand-800 to-brand-700 text-white shadow-lg no-print">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex flex-wrap justify-between items-center gap-4">
+            <div class="flex items-center space-x-3">
+                <div class="w-11 h-11 bg-white/10 rounded-xl flex items-center justify-center border border-white/20 shadow-inner">
+                    <i class="fa-solid me-0.5 fa-building-flag text-2xl text-amber-400"></i>
+                </div>
+                <div>
+                    <h1 class="font-bold text-lg leading-tight tracking-wide flex items-center gap-2">
+                        E-LKH Kecamatan Situraja
+                        <span class="bg-amber-500/20 text-amber-300 border border-amber-400/30 text-[10px] uppercase font-bold px-2 py-0.5 rounded-full">AI Powered</span>
+                    </h1>
+                    <p class="text-xs text-brand-100">Penyusunan Narasi Laporan Hasil Kegiatan Resmi ASN</p>
+                </div>
+            </div>
+
+            <!-- Navigation Tabs -->
+            <nav class="flex items-center bg-brand-900/50 p-1 rounded-xl border border-white/10 text-sm font-medium">
+                <button onclick="switchTab('tab-input')" id="nav-tab-input" class="px-4 py-2 rounded-lg flex items-center gap-2 transition-all bg-brand-600 text-white shadow-sm">
+                    <i class="fa-solid fa-pen-to-square"></i>
+                    <span>Pengisian LKH</span>
+                </button>
+                <button onclick="switchTab('tab-master')" id="nav-tab-master" class="px-4 py-2 rounded-lg flex items-center gap-2 text-brand-100 hover:text-white hover:bg-white/5 transition-all">
+                    <i class="fa-solid fa-database"></i>
+                    <span>Data Master SKP</span>
+                </button>
+                <button onclick="switchTab('tab-history')" id="nav-tab-history" class="px-4 py-2 rounded-lg flex items-center gap-2 text-brand-100 hover:text-white hover:bg-white/5 transition-all">
+                    <i class="fa-solid fa-clock-rotate-left"></i>
+                    <span>Riwayat Laporan</span>
+                </button>
+                <button onclick="switchTab('tab-plan')" id="nav-tab-plan" class="px-4 py-2 rounded-lg flex items-center gap-2 text-brand-100 hover:text-white hover:bg-white/5 transition-all">
+                    <i class="fa-solid fa-diagram-project"></i>
+                    <span>Perencanaan Sistem</span>
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+
+        <!-- Notification Toast -->
+        <div id="toast" class="fixed bottom-5 right-5 z-50 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none">
+            <div id="toast-content" class="bg-slate-900 text-white px-5 py-3 rounded-xl shadow-2xl flex items-center gap-3 border border-slate-700">
+                <i id="toast-icon" class="fa-solid fa-circle-check text-emerald-400 text-lg"></i>
+                <span id="toast-msg" class="text-sm font-medium">Pesan notifikasi</span>
+            </div>
+        </div>
+
+        <!-- TAB 1: PENGISIAN LKH -->
+        <section id="tab-input" class="tab-content space-y-6">
+            <!-- Header Informasi / Identitas Karyawan -->
+            <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200/80 flex flex-wrap justify-between items-center gap-4">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 w-full">
+                    <div>
+                        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Seksi / Subbagian</label>
+                        <select id="user-section" onchange="updateMasterOptions()" class="w-full bg-slate-50 border border-slate-300 text-slate-800 text-sm rounded-xl focus:ring-brand-500 focus:border-brand-500 p-2.5 font-medium">
+                            <option value="Seksi Pemberdayaan Masyarakat">Seksi Pemberdayaan Masyarakat</option>
+                            <option value="Seksi Pelayanan Publik">Seksi Pelayanan Publik</option>
+                            <option value="Seksi Pemerintahan Desa">Seksi Pemerintahan Desa</option>
+                            <option value="Seksi Pemerintahan Umum">Seksi Pemerintahan Umum</option>
+                            <option value="Seksi Ketentraman dan Ketertiban Umum">Seksi Ketentraman dan Ketertiban Umum</option>
+                            <option value="Subbagian Umum dan Kepegawaian">Subbagian Umum dan Kepegawaian</option>
+                            <option value="Subbagian Program dan Keuangan">Subbagian Program dan Keuangan</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Nama Pegawai / Penanggung Jawab</label>
+                        <input type="text" id="user-name" placeholder="Nama Pegawai / NIP" class="w-full bg-slate-50 border border-slate-300 text-slate-800 text-sm rounded-xl focus:ring-brand-500 focus:border-brand-500 p-2.5 font-medium" value="Asep Kurnia, S.STP">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Tanggal & Waktu Pelaksanaan</label>
+                        <div class="grid grid-cols-2 gap-2">
+                            <input type="date" id="activity-date" class="bg-slate-50 border border-slate-300 text-slate-800 text-sm rounded-xl focus:ring-brand-500 focus:border-brand-500 p-2.5">
+                            <input type="text" id="activity-time" placeholder="08.00 - 12.00 WIB" value="08.30 - 11.30 WIB" class="bg-slate-50 border border-slate-300 text-slate-800 text-sm rounded-xl focus:ring-brand-500 focus:border-brand-500 p-2.5">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                <!-- Form Input Kegiatan Utama -->
+                <div class="lg:col-span-7 space-y-6">
+                    <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200/80 space-y-5">
+                        <div class="border-b border-slate-100 pb-3 flex justify-between items-center">
+                            <h2 class="font-bold text-slate-800 text-base flex items-center gap-2">
+                                <span class="w-7 h-7 bg-brand-50 text-brand-600 rounded-lg flex items-center justify-center text-xs font-bold">1</span>
+                                Pemilihan Hasil Kerja & Rencana Aksi (Master SKP)
+                            </h2>
+                            <span class="text-xs text-slate-400">Terintegrasi E-Kinerja</span>
+                        </div>
+
+                        <!-- Pilih Hasil Kerja Master -->
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 uppercase mb-1">Hasil Kerja (Target SKP / Indikator)</label>
+                            <select id="select-hasil-kerja" onchange="handleHasilKerjaChange()" class="w-full bg-slate-50 border border-slate-300 text-slate-800 text-sm rounded-xl focus:ring-brand-500 focus:border-brand-500 p-3 font-medium">
+                                <!-- Options populated dynamically via JS -->
+                            </select>
+                        </div>
+
+                        <!-- Pilih Rencana Aksi Master (Optional) -->
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 uppercase mb-1">
+                                Rencana Aksi Master <span class="text-amber-600 font-normal border border-amber-200 bg-amber-50 px-1.5 py-0.5 rounded text-[10px] lowercase">opsional</span>
+                            </label>
+                            <select id="select-rencana-aksi" class="w-full bg-slate-50 border border-slate-300 text-slate-800 text-sm rounded-xl focus:ring-brand-500 focus:border-brand-500 p-3 font-medium">
+                                <!-- Options populated dynamically based on Hasil Kerja -->
+                            </select>
+                        </div>
+
+                        <!-- Detail Pelaksanaan Lapangan / Poin Kegiatan -->
+                        <div class="pt-2 border-t border-slate-100">
+                            <h3 class="font-bold text-slate-800 text-sm mb-3 flex items-center gap-2">
+                                <span class="w-7 h-7 bg-brand-50 text-brand-600 rounded-lg flex items-center justify-center text-xs font-bold">2</span>
+                                Rincian Aktivitas Lapangan & Fakta Kegiatan
+                            </h3>
+
+                            <div class="space-y-4">
+                                <div>
+                                    <label class="block text-xs font-medium text-slate-600 mb-1">Lokasi Pelaksanaan / Nama Rapat / Pihak Terlibat</label>
+                                    <input type="text" id="activity-location" placeholder="misal: Aula Desa Situraja / Rapat Koordinasi Bersama BPD & Kepala Desa" value="Aula Kecamatan Situraja / Dihadiri Jajaran Seksi & Perangkat Desa" class="w-full bg-slate-50 border border-slate-300 text-slate-800 text-sm rounded-xl p-2.5 focus:ring-brand-500">
+                                </div>
+
+                                <div>
+                                    <label class="block text-xs font-medium text-slate-600 mb-1">
+                                        Uraian Aktivitas / Poin Kegiatan / Catatan Rapat <span class="text-amber-600 text-[10px]">(Opsional - Jika rapat seharian/tidak ada poin khusus boleh dikosongkan)</span>
+                                    </label>
+                                    <textarea id="activity-points" rows="3" placeholder="- Menghadiri rapat pembahasan sinkronisasi data kependudukan&#10;- Menerima pengarahan teknis pelaksanaan kegiatan&#10;- Melakukan pencatatan hasil diskusi" class="w-full bg-slate-50 border border-slate-300 text-slate-800 text-sm rounded-xl p-3 focus:ring-brand-500 font-sans"></textarea>
+                                </div>
+
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                    <div>
+                                        <label class="block text-xs font-medium text-slate-600 mb-1">
+                                            Bentuk Output / Bukti Fisik <span class="text-amber-600 text-[10px]">(Opsional)</span>
+                                        </label>
+                                        <input type="text" id="activity-output" placeholder="misal: 1 Berkas Notula Rapat & Foto Kegiatan (Opsional)" value="1 Dokumen Notula & Daftar Hadir" class="w-full bg-slate-50 border border-slate-300 text-slate-800 text-sm rounded-xl p-2.5">
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-medium text-slate-600 mb-1">
+                                            Kendala & Solusi <span class="text-amber-600 text-[10px]">(Opsional)</span>
+                                        </label>
+                                        <input type="text" id="activity-obstacles" placeholder="misal: Berkas pendukung belum lengkap (Opsional)" class="w-full bg-slate-50 border border-slate-300 text-slate-800 text-sm rounded-xl p-2.5">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Section Kegiatan Tambahan / Opsional -->
+                        <div class="pt-3 border-t border-slate-100">
+                            <div class="flex items-center justify-between mb-2">
+                                <label class="inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" id="toggle-optional-activities" onchange="toggleOptionalSection()" class="sr-only peer">
+                                    <div class="relative w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-amber-500"></div>
+                                    <span class="ms-3 text-xs font-bold text-slate-700 uppercase tracking-wider">Ada Kegiatan Opsional / Tugas Insidental Diluar Master SKP?</span>
+                                </label>
+                            </div>
+
+                            <div id="optional-activity-container" class="hidden space-y-3 mt-3 p-4 bg-amber-50/60 rounded-xl border border-amber-200">
+                                <p class="text-xs text-amber-800 font-medium">Tambahkan agenda luar biasa, disposisi Camat, atau penugasan penanganan darurat:</p>
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-700 mb-1">Nama / Jenis Kegiatan Tambahan</label>
+                                    <input type="text" id="optional-title" placeholder="misal: Monitoring Kendala Bencana Longsor di Jalur Situraja-Rancakalong / Pendampingan Tamu Tim Evaluasi Kabupaten" class="w-full bg-white border border-amber-300 text-slate-800 text-sm rounded-xl p-2.5 focus:ring-amber-500">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-700 mb-1">Uraian Ringkas Kegiatan Tambahan</label>
+                                    <textarea id="optional-desc" rows="2" placeholder="Menindaklanjuti arahan Bapak Camat Situraja untuk koordinasi bersama BPBD dan Babinsa..." class="w-full bg-white border border-amber-300 text-slate-800 text-sm rounded-xl p-2.5 focus:ring-amber-500"></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Action Button Generate -->
+                        <div class="pt-2">
+                            <button type="button" onclick="generateAINarrative()" id="btn-generate" class="w-full bg-gradient-to-r from-brand-600 to-brand-700 hover:from-brand-700 hover:to-brand-800 text-white font-bold py-3.5 px-6 rounded-xl shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-3 group">
+                                <i class="fa-solid fa-wand-magic-sparkles text-amber-300 group-hover:rotate-12 transition-transform text-lg"></i>
+                                <span>Proses & Generasi Narasi AI (Bahasa Kedinasan Resmi)</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Area Output Preview Narasi AI -->
+                <div class="lg:col-span-5 space-y-6">
+                    <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200/80 sticky top-6 space-y-4">
+                        <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                            <div class="flex items-center gap-2">
+                                <span class="w-3 h-3 bg-emerald-500 rounded-full animate-pulse"></span>
+                                <h3 class="font-bold text-slate-800 text-base">Hasil Narasi LHK Resmi</h3>
+                            </div>
+                            <span class="text-xs bg-slate-100 text-slate-600 px-2.5 py-1 rounded-lg font-mono">Format E-Kinerja</span>
+                        </div>
+
+                        <!-- AI Processing Loader -->
+                        <div id="ai-loading" class="hidden py-12 text-center space-y-3">
+                            <div class="inline-block animate-spin rounded-full h-10 w-10 border-4 border-brand-500 border-t-transparent"></div>
+                            <p class="text-sm text-slate-600 font-medium animate-pulse">Menyusun paragraf narasi kedinasan dengan AI...</p>
+                            <p class="text-xs text-slate-400">Menerjemahkan poin aktivitas ke standar bahasa birokrasi Kecamatan Situraja</p>
+                        </div>
+
+                        <!-- Output Content Area -->
+                        <div id="ai-output-container" class="space-y-4">
+                            <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 min-h-[220px]">
+                                <label class="block text-[11px] font-bold text-slate-400 uppercase mb-2">Paragraf Laporan Hasil Kegiatan (Narasi):</label>
+                                <textarea id="narrative-output" rows="10" class="w-full bg-transparent text-slate-800 text-sm leading-relaxed border-none focus:ring-0 resize-y font-sans" placeholder="Hasil narasi LHK resmi berbentuk paragraf akan muncul di sini setelah Anda mengklik tombol generasi AI..."></textarea>
+                            </div>
+
+                            <!-- Formatting Quick Options -->
+                            <div class="flex flex-wrap gap-2 text-xs">
+                                <button onclick="formatTone('formal')" class="px-2.5 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg font-medium transition-colors">
+                                    <i class="fa-solid fa-stamp text-brand-600 me-1"></i> Mode Birokrasi Baku
+                                </button>
+                                <button onclick="formatTone('ringkas')" class="px-2.5 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg font-medium transition-colors">
+                                    <i class="fa-solid fa-compress me-1 text-emerald-600"></i> Mode Ringkas Poin
+                                </button>
+                            </div>
+
+                            <!-- Action Tools -->
+                            <div class="grid grid-cols-2 gap-2 pt-2">
+                                <button type="button" onclick="copyNarrative()" class="w-full bg-slate-800 hover:bg-slate-900 text-white font-semibold py-2.5 px-4 rounded-xl text-sm transition-all flex items-center justify-center gap-2">
+                                    <i class="fa-regular fa-copy"></i>
+                                    <span>Salin Narasi</span>
+                                </button>
+                                <button type="button" onclick="saveToHistory()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-2.5 px-4 rounded-xl text-sm transition-all flex items-center justify-center gap-2">
+                                    <i class="fa-solid fa-floppy-disk"></i>
+                                    <span>Simpan Laporan</span>
+                                </button>
+                            </div>
+
+                            <button type="button" onclick="printReport()" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold py-2 px-4 rounded-xl text-xs transition-all flex items-center justify-center gap-2 border border-slate-200">
+                                <i class="fa-solid fa-print"></i>
+                                <span>Cetak Form LHK Cetak Lembar Kedinasan</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 2: DATA MASTER SKP -->
+        <section id="tab-master" class="tab-content hidden space-y-6">
+            <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200/80 space-y-4">
+                <div class="flex flex-wrap justify-between items-center gap-4 border-b border-slate-100 pb-4">
+                    <div>
+                        <h2 class="font-bold text-slate-800 text-lg flex items-center gap-2">
+                            <i class="fa-solid fa-database text-brand-600"></i>
+                            Kelola Data Master Hasil Kerja & Rencana Aksi
+                        </h2>
+                        <p class="text-xs text-slate-500">Sesuaikan target SKP dan Rencana Aksi berdasarkan Seksi / Subbagian di Kecamatan Situraja</p>
+                    </div>
+                    <button onclick="openAddMasterModal()" class="bg-brand-600 hover:bg-brand-700 text-white text-sm font-semibold px-4 py-2 rounded-xl flex items-center gap-2 transition-all">
+                        <i class="fa-solid fa-plus"></i>
+                        <span>Tambah Master Baru</span>
+                    </button>
+                </div>
+
+                <!-- Selector Filter Seksi -->
+                <div class="flex items-center gap-3">
+                    <span class="text-xs font-semibold uppercase text-slate-500">Filter Seksi / Subbagian:</span>
+                    <select id="master-filter-section" onchange="renderMasterTable()" class="bg-slate-50 border border-slate-300 text-slate-800 text-sm rounded-xl p-2 font-medium">
+                        <option value="ALL">Semua Seksi / Subbagian</option>
+                        <option value="Seksi Pemberdayaan Masyarakat">Seksi Pemberdayaan Masyarakat</option>
+                        <option value="Seksi Pelayanan Publik">Seksi Pelayanan Publik</option>
+                        <option value="Seksi Pemerintahan Desa">Seksi Pemerintahan Desa</option>
+                        <option value="Seksi Pemerintahan Umum">Seksi Pemerintahan Umum</option>
+                        <option value="Seksi Ketentraman dan Ketertiban Umum">Seksi Ketentraman dan Ketertiban Umum</option>
+                        <option value="Subbagian Umum dan Kepegawaian">Subbagian Umum dan Kepegawaian</option>
+                        <option value="Subbagian Program dan Keuangan">Subbagian Program dan Keuangan</option>
+                    </select>
+                </div>
+
+                <!-- Table Master Data -->
+                <div class="overflow-x-auto border border-slate-200 rounded-xl">
+                    <table class="w-full text-left text-sm text-slate-700">
+                        <thead class="bg-slate-50 text-xs font-bold text-slate-500 uppercase border-b border-slate-200">
+                            <tr>
+                                <th class="px-4 py-3">No</th>
+                                <th class="px-4 py-3">Seksi / Subbagian</th>
+                                <th class="px-4 py-3">Hasil Kerja (SKP)</th>
+                                <th class="px-4 py-3">Rencana Aksi Terkait</th>
+                                <th class="px-4 py-3 text-center">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="master-table-body" class="divide-y divide-slate-100">
+                            <!-- Populated dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 3: RIWAYAT LAPORAN -->
+        <section id="tab-history" class="tab-content hidden space-y-6">
+            <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200/80 space-y-4">
+                <div class="flex flex-wrap justify-between items-center gap-4 border-b border-slate-100 pb-4">
+                    <div>
+                        <h2 class="font-bold text-slate-800 text-lg flex items-center gap-2">
+                            <i class="fa-solid fa-clock-rotate-left text-brand-600"></i>
+                            Riwayat Laporan Kinerja Harian
+                        </h2>
+                        <p class="text-xs text-slate-500">Daftar arsip narasi laporan harian yang tersimpan lokal di peranti Anda</p>
+                    </div>
+                    <button onclick="clearHistory()" class="bg-rose-50 hover:bg-rose-100 text-rose-600 text-xs font-semibold px-3 py-2 rounded-xl flex items-center gap-2 transition-all border border-rose-200">
+                        <i class="fa-solid fa-trash"></i>
+                        <span>Bersihkan Riwayat</span>
+                    </button>
+                </div>
+
+                <div id="history-list" class="space-y-4">
+                    <!-- History items populated via JS -->
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 4: PERENCANAAN SISTEM & DOKUMEN SOP -->
+        <section id="tab-plan" class="tab-content hidden space-y-6">
+            <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200/80 space-y-6">
+                <div>
+                    <h2 class="font-bold text-slate-800 text-xl flex items-center gap-2 border-b border-slate-100 pb-3">
+                        <i class="fa-solid fa-diagram-project text-brand-600"></i>
+                        Dokumen Perencanaan Arsitektur & SOP LKH AI Kecamatan Situraja
+                    </h2>
+                    <p class="text-xs text-slate-500 mt-1">Perencanaan konseptual sistem pengolahan narasi otomatis bagi ASN Kecamatan Situraja, Kab. Sumedang</p>
+                </div>
+
+                <!-- Grid Planning Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="bg-slate-50 rounded-xl p-5 border border-slate-200 space-y-3">
+                        <div class="flex items-center gap-3">
+                            <span class="w-8 h-8 bg-brand-600 text-white rounded-lg flex items-center justify-center font-bold text-sm">1</span>
+                            <h3 class="font-bold text-slate-800 text-sm">Tujuan & Latar Belakang Aplikasi</h3>
+                        </div>
+                        <p class="text-xs text-slate-600 leading-relaxed">
+                            Aplikasi ini dirancang untuk mempermudah pegawai/karyawan di Kecamatan Situraja dalam menyusun deskripsi Laporan Hasil Kegiatan (LKH) harian. Seringkali aktivitas di lapangan sulit ditransformasikan ke dalam paragraf narasi birokrasi baku yang dituntut oleh sistem e-Kinerja BKN / Pemkab Sumedang. Dengan bantuan AI Gemini, poin-poin singkat diubah secara otomatis menjadi paragraf narasi kedinasan yang terstruktur, padat, dan resmi.
+                        </p>
+                    </div>
+
+                    <div class="bg-slate-50 rounded-xl p-5 border border-slate-200 space-y-3">
+                        <div class="flex items-center gap-3">
+                            <span class="w-8 h-8 bg-amber-500 text-white rounded-lg flex items-center justify-center font-bold text-sm">2</span>
+                            <h3 class="font-bold text-slate-800 text-sm">Alur Kerja (Workflow)</h3>
+                        </div>
+                        <ul class="text-xs text-slate-600 space-y-2 list-disc list-inside">
+                            <li>Pegawai memilih unit **Seksi** dan identitas pelaksanaan kegiatan.</li>
+                            <li>Sistem menyajikan pilihan **Hasil Kerja (SKP)** & **Rencana Aksi** relevan dari Data Master.</li>
+                            <li>Pegawai menginput lokasi, temuan/poin penting kegiatan, serta kegiatan optional insidental jika ada.</li>
+                            <li>Engine Gemini AI menyusun paragraf narasi sesuai standar tata naskah dinas birokrasi.</li>
+                            <li>Pegawai melakukan verifikasi, menyalin narasi, atau mencetak laporan fisik LHK.</li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-slate-50 rounded-xl p-5 border border-slate-200 space-y-3">
+                        <div class="flex items-center gap-3">
+                            <span class="w-8 h-8 bg-emerald-600 text-white rounded-lg flex items-center justify-center font-bold text-sm">3</span>
+                            <h3 class="font-bold text-slate-800 text-sm">Struktur Prompting Gemini AI</h3>
+                        </div>
+                        <p class="text-xs text-slate-600 leading-relaxed font-mono bg-white p-3 rounded-lg border border-slate-200">
+                            System Instruction: "Anda adalah Asisten Penulisan Laporan Birokrasi Pemerintahan Daerah Kecamatan Situraja, Kabupaten Sumedang. Ubah masukan target Hasil Kerja, Rencana Aksi, lokasi, serta rincian kegiatan menjadi 1-2 paragraf narasi kedinasan yang formal, objektif, menggunakan EBI/PUEBI, serta memuat konteks pelayanan publik."
+                        </p>
+                    </div>
+
+                    <div class="bg-slate-50 rounded-xl p-5 border border-slate-200 space-y-3">
+                        <div class="flex items-center gap-3">
+                            <span class="w-8 h-8 bg-purple-600 text-white rounded-lg flex items-center justify-center font-bold text-sm">4</span>
+                            <h3 class="font-bold text-slate-800 text-sm">Cakupan Unit Kerja Kecamatan Situraja</h3>
+                        </div>
+                        <div class="grid grid-cols-2 gap-2 text-xs text-slate-700">
+                            <div class="bg-white p-2 rounded border border-slate-200">• Seksi Pemerintahan</div>
+                            <div class="bg-white p-2 rounded border border-slate-200">• Seksi Trantibum</div>
+                            <div class="bg-white p-2 rounded border border-slate-200">• Seksi PMD</div>
+                            <div class="bg-white p-2 rounded border border-slate-200">• Seksi Pelayanan Umum</div>
+                            <div class="bg-white p-2 rounded border border-slate-200">• Subag Umum & Keuangan</div>
+                            <div class="bg-white p-2 rounded border border-slate-200">• Sekretariat</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Template Cetak LHK Kedinasan (Print Only) -->
+    <div id="print-area" class="print-only p-8">
+        <div class="text-center border-b-2 border-black pb-4 mb-6">
+            <h2 class="font-bold text-base uppercase tracking-wider">PEMERINTAH KABUPATEN SUMEDANG</h2>
+            <h1 class="font-extrabold text-xl uppercase">KECAMATAN SITURAJA</h1>
+            <p class="text-xs italic mt-1">Jalan Raya Situraja No. 01 Kecamatan Situraja, Kabupaten Sumedang, Jawa Barat 45371</p>
+        </div>
+
+        <div class="text-center mb-6">
+            <h3 class="font-bold text-lg underline uppercase">LAPORAN HASIL KEGIATAN (LKH) HARIAN</h3>
+        </div>
+
+        <table class="w-full text-xs border-collapse border border-black mb-6">
+            <tr>
+                <td class="p-2 border border-black font-bold w-1/3">Nama Pegawai / NIP</td>
+                <td class="p-2 border border-black" id="print-user"></td>
+            </tr>
+            <tr>
+                <td class="p-2 border border-black font-bold">Seksi / Unit Kerja</td>
+                <td class="p-2 border border-black" id="print-section"></td>
+            </tr>
+            <tr>
+                <td class="p-2 border border-black font-bold">Hari / Tanggal & Waktu</td>
+                <td class="p-2 border border-black" id="print-datetime"></td>
+            </tr>
+            <tr>
+                <td class="p-2 border border-black font-bold">Hasil Kerja SKP</td>
+                <td class="p-2 border border-black" id="print-hasilkerja"></td>
+            </tr>
+            <tr>
+                <td class="p-2 border border-black font-bold">Rencana Aksi</td>
+                <td class="p-2 border border-black" id="print-rencanaaksi"></td>
+            </tr>
+            <tr>
+                <td class="p-2 border border-black font-bold">Lokasi Pelaksanaan</td>
+                <td class="p-2 border border-black" id="print-location"></td>
+            </tr>
+        </table>
+
+        <div class="mb-6">
+            <h4 class="font-bold text-xs uppercase mb-2">Deskripsi Narasi Laporan Hasil Kegiatan:</h4>
+            <div class="p-4 border border-black text-justify text-xs leading-relaxed" id="print-narrative">
+            </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-8 text-center text-xs mt-12 pt-8">
+            <div>
+                <p>Mengetahui,</p>
+                <p class="font-bold mt-1">Atasan Langsung / Camat Situraja</p>
+                <div class="h-20"></div>
+                <p class="font-bold underline">( .................................................... )</p>
+                <p>NIP.</p>
+            </div>
+            <div>
+                <p>Situraja, <span id="print-today-date"></span></p>
+                <p class="font-bold mt-1">Pegawai Pelapor,</p>
+                <div class="h-20"></div>
+                <p class="font-bold underline" id="print-sign-user"></p>
+                <p>NIP.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Tambah / Edit Data Master -->
+    <div id="modal-master" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
+        <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl space-y-4">
+            <div class="flex justify-between items-center border-b border-slate-100 pb-3">
+                <h3 id="modal-master-title" class="font-bold text-slate-800 text-base">Tambah Data Master SKP Baru</h3>
+                <button onclick="closeAddMasterModal()" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <input type="hidden" id="modal-edit-id" value="">
+            <div class="space-y-3">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Seksi / Subbagian</label>
+                    <select id="modal-section" class="w-full bg-slate-50 border border-slate-300 text-sm rounded-xl p-2.5">
+                        <option value="Seksi Pemberdayaan Masyarakat">Seksi Pemberdayaan Masyarakat</option>
+                        <option value="Seksi Pelayanan Publik">Seksi Pelayanan Publik</option>
+                        <option value="Seksi Pemerintahan Desa">Seksi Pemerintahan Desa</option>
+                        <option value="Seksi Pemerintahan Umum">Seksi Pemerintahan Umum</option>
+                        <option value="Seksi Ketentraman dan Ketertiban Umum">Seksi Ketentraman dan Ketertiban Umum</option>
+                        <option value="Subbagian Umum dan Kepegawaian">Subbagian Umum dan Kepegawaian</option>
+                        <option value="Subbagian Program dan Keuangan">Subbagian Program dan Keuangan</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Hasil Kerja Utama (Target SKP)</label>
+                    <input type="text" id="modal-hasil-kerja" placeholder="misal: Terlaksananya pembinaan administrasi pemerintahan desa" class="w-full bg-slate-50 border border-slate-300 text-sm rounded-xl p-2.5">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Rencana Aksi Terkait (Pisahkan tiap poin dengan baris baru / koma)</label>
+                    <textarea id="modal-rencana-aksi" rows="4" placeholder="Melakukan verifikasi LPPD&#10;Melakukan monev APBDES&#10;Menyusun rekapitulasi pertanggungjawaban" class="w-full bg-slate-50 border border-slate-300 text-sm rounded-xl p-2.5 font-sans"></textarea>
+                </div>
+            </div>
+            <div class="flex justify-end gap-2 pt-2">
+                <button onclick="closeAddMasterModal()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-semibold">Batal</button>
+                <button onclick="saveNewMaster()" class="px-4 py-2 bg-brand-600 hover:bg-brand-700 text-white rounded-xl text-xs font-semibold">Simpan Data Master</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-slate-200 text-center py-4 text-xs text-slate-500 no-print">
+        <p>© 2026 Kantor Kecamatan Situraja - Kabupaten Sumedang. Sistem Otomasi Laporan Kinerja ASN.</p>
+    </footer>
+
+    <script>
+        /*
+         * Data Khusus Kecamatan Situraja dengan 7 Seksi / Subbagian Resmi
+         */
+        const initialMasterData = [
+            {
+                id: 'm1',
+                section: 'Seksi Pemberdayaan Masyarakat',
+                hasilKerja: 'Terselenggaranya Pendampingan Pengelolaan Keuangan dan Fasilitasi Pembangunan Desa',
+                rencanaAksi: [
+                    'Melakukan verifikasi usulan Dokumen APBDes / RKPDes di wilayah Situraja',
+                    'Melaksanakan pembinaan monitoring dan evaluasi (Monev) pelaksanaan fisik pembangunan desa',
+                    'Pendampingan program penanganan Stunting dan pemberdayaan Bumdes'
+                ]
+            },
+            {
+                id: 'm2',
+                section: 'Seksi Pelayanan Publik',
+                hasilKerja: 'Terselenggaranya Pelayanan Administrasi Terpadu Kecamatan (PATEN) yang Prima dan Transparan',
+                rencanaAksi: [
+                    'Melakukan verifikasi berkas permohonan KTP-el, KK, dan Surat Pindah',
+                    'Melakukan pencetakan dan perekaman data kependudukan pemohon',
+                    'Memproses pembuatan Surat Keterangan Tidak Mampu (SKTM) dan perizinan non-fiskal'
+                ]
+            },
+            {
+                id: 'm3',
+                section: 'Seksi Pemerintahan Desa',
+                hasilKerja: 'Terlaksananya Pembinaan, Supervisi, dan Evaluasi Administrasi Pemerintahan Desa',
+                rencanaAksi: [
+                    'Melakukan verifikasi berkas Laporan Penyelenggaraan Pemerintahan Desa (LPPD)',
+                    'Melaksanakan pemantauan kelancaran administrasi pertanahan & PBB-P2 desa',
+                    'Melakukan verifikasi dan fasilitasi pengangkatan/pemberhentian perangkat desa'
+                ]
+            },
+            {
+                id: 'm4',
+                section: 'Seksi Pemerintahan Umum',
+                hasilKerja: 'Terlaksananya Koordinasi Penyelenggaraan Pemerintahan Umum dan Penataan Wilayah',
+                rencanaAksi: [
+                    'Melakukan koordinasi dengan instansi vertikal terkait penataan batas wilayah',
+                    'Mengoordinasikan fasilitasi kegiatan Pemilu / Pilkada dan Keorganisasian Masyarakat',
+                    'Memproses administrasi pertanahan dan fasilitasi perizinan umum'
+                ]
+            },
+            {
+                id: 'm5',
+                section: 'Seksi Ketentraman dan Ketertiban Umum',
+                hasilKerja: 'Terwujudnya Ketertiban Umum, Ketentraman, dan Perlindungan Masyarakat di Wilayah Kecamatan Situraja',
+                rencanaAksi: [
+                    'Melaksanakan patroli kewilayahan dan pemantauan titik rawan gangguan trantibum',
+                    'Melakukan penertiban dan pembinaan pedagang kaki lima/fasilitas umum',
+                    'Mengkoordinasikan kesiapsiagaan Satlinmas desa dalam pencegahan potensi bencana alam'
+                ]
+            },
+            {
+                id: 'm6',
+                section: 'Subbagian Umum dan Kepegawaian',
+                hasilKerja: 'Terlaksananya Pengelolaan Administrasi Persuratan, Kepegawaian, dan Rumah Tangga',
+                rencanaAksi: [
+                    'Pencatatan dan pendistribusian surat masuk/keluar ke seksi terkait',
+                    'Pengelolaan data kepegawaian, usul kenaikan pangkat, dan absensi ASN',
+                    'Pemeliharaan sarana prasarana serta kebersihan lingkungan kantor'
+                ]
+            },
+            {
+                id: 'm7',
+                section: 'Subbagian Program dan Keuangan',
+                hasilKerja: 'Tersusunnya Perencanaan Program, Pengelolaan Keuangan, dan Pelaporan Kinerja',
+                rencanaAksi: [
+                    'Menyusun draf Rencana Kerja (Renja) dan RKA Kecamatan Situraja',
+                    'Melakukan verifikasi berkas Surat Perintah Membayar (SPM) dan SPJ Keuangan',
+                    'Menyusun Laporan Kinerja Instansi Pemerintah (LKjIP) dan Laporan Keuangan'
+                ]
+            }
+        ];
+
+        // Global Storage
+        let masterData = JSON.parse(localStorage.getItem('situraja_master_data')) || initialMasterData;
+        let historyData = JSON.parse(localStorage.getItem('situraja_history_data')) || [];
+
+        // Initialization on Load
+        window.onload = function() {
+            document.getElementById('activity-date').valueAsDate = new Date();
+            updateMasterOptions();
+            renderMasterTable();
+            renderHistoryList();
+        };
+
+        // Navigation Switcher
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.getElementById(tabId).classList.remove('hidden');
+
+            ['input', 'master', 'history', 'plan'].forEach(name => {
+                const btn = document.getElementById(`nav-tab-${name}`);
+                if (`tab-${name}` === tabId) {
+                    btn.className = "px-4 py-2 rounded-lg flex items-center gap-2 transition-all bg-brand-600 text-white shadow-sm font-medium";
+                } else {
+                    btn.className = "px-4 py-2 rounded-lg flex items-center gap-2 text-brand-100 hover:text-white hover:bg-white/5 transition-all font-medium";
+                }
+            });
+        }
+
+        // Update Master Select Dropdowns based on chosen Section
+        function updateMasterOptions() {
+            const currentSection = document.getElementById('user-section').value;
+            const hkSelect = document.getElementById('select-hasil-kerja');
+            
+            hkSelect.innerHTML = '';
+
+            const filteredData = masterData.filter(item => item.section === currentSection);
+
+            if (filteredData.length === 0) {
+                const opt = document.createElement('option');
+                opt.value = "";
+                opt.textContent = "-- Tidak ada data master untuk seksi ini (Bisa ditambah) --";
+                hkSelect.appendChild(opt);
+                handleHasilKerjaChange();
+                return;
+            }
+
+            filteredData.forEach(item => {
+                const opt = document.createElement('option');
+                opt.value = item.id;
+                opt.textContent = item.hasilKerja;
+                hkSelect.appendChild(opt);
+            });
+
+            handleHasilKerjaChange();
+        }
+
+        // Update Action Plan Dropdown when Hasil Kerja changes
+        function handleHasilKerjaChange() {
+            const hkSelectValue = document.getElementById('select-hasil-kerja').value;
+            const raSelect = document.getElementById('select-rencana-aksi');
+            raSelect.innerHTML = '';
+
+            // Default optional selection
+            const defaultOpt = document.createElement('option');
+            defaultOpt.value = "";
+            defaultOpt.textContent = "-- (Opsional) Tidak memilih Rencana Aksi spesifik --";
+            raSelect.appendChild(defaultOpt);
+
+            const item = masterData.find(m => m.id === hkSelectValue);
+            if (!item || !item.rencanaAksi) {
+                return;
+            }
+
+            item.rencanaAksi.forEach((ra, index) => {
+                const opt = document.createElement('option');
+                opt.value = ra;
+                opt.textContent = `${index + 1}. ${ra}`;
+                raSelect.appendChild(opt);
+            });
+        }
+
+        // Optional Section Toggle
+        function toggleOptionalSection() {
+            const container = document.getElementById('optional-activity-container');
+            const isChecked = document.getElementById('toggle-optional-activities').checked;
+            if (isChecked) {
+                container.classList.remove('hidden');
+            } else {
+                container.classList.add('hidden');
+            }
+        }
+
+        /*
+         * Gemini AI Integration Engine
+         */
+        async function generateAINarrative() {
+            const section = document.getElementById('user-section').value;
+            const userName = document.getElementById('user-name').value || 'Pegawai Kecamatan Situraja';
+            const dateVal = document.getElementById('activity-date').value;
+
+            const hkSelect = document.getElementById('select-hasil-kerja');
+            const selectedHkText = hkSelect.options[hkSelect.selectedIndex] ? hkSelect.options[hkSelect.selectedIndex].text : 'Tugas Pokok Seksi';
+            const raVal = document.getElementById('select-rencana-aksi').value;
+
+            const location = document.getElementById('activity-location').value;
+            const points = document.getElementById('activity-points').value;
+            const outputDoc = document.getElementById('activity-output').value;
+            const obstacles = document.getElementById('activity-obstacles').value;
+
+            const hasOptional = document.getElementById('toggle-optional-activities').checked;
+            const optionalTitle = document.getElementById('optional-title').value;
+            const optionalDesc = document.getElementById('optional-desc').value;
+
+            // UI Loading state
+            document.getElementById('ai-loading').classList.remove('hidden');
+            document.getElementById('ai-output-container').classList.add('opacity-40');
+
+            const systemPrompt = `Anda adalah seorang ahli tata naskah dinas birokrasi pemerintahan daerah di Indonesia, khususnya untuk Aparatur Sipil Negara (ASN) di Kantor Kecamatan Situraja, Kabupaten Sumedang. 
+Tugas Anda adalah mengolah catatan kegiatan harian pegawai menjadi SATU atau DUA PARAGRAF NARASI RESMI yang mengalir, padat, profesional, serta menggunakan ejaan PUEBI/EBI yang baku.
+PENTING: JANGAN MENCANTUMKAN DETAIL JAM / WAKTU / PUKUL PELAKSANAAN (seperti "pukul 08.00 - 12.00 WIB" atau "pukul 08.30") di dalam paragraf narasi laporan. Cukup sebutkan tanggal atau frasa "Pada hari ini".
+Catatan: Rencana aksi dan uraian aktivitas spesifik bersifat opsional. Susunlah narasi birokrasi yang tetap natural dan lengkap meskipun ada data yang tidak diisi.
+Gunakan frasa resmi kedinasan seperti "Pada hari ini", "Telah dilaksanakan", "Bertempat di", "Dalam rangka mendukung pencapaian target", dll.
+JANGAN gunakan format bullet point, gunakan bentuk paragraf narasi utuh yang siap ditempel ke aplikasi e-Kinerja.`;
+
+            let userQuery = `Buatkan paragraf narasi resmi Laporan Hasil Kegiatan (LKH) dengan data berikut:
+- Pegawai / Unit: ${userName} (${section})
+- Tanggal Pelaksanaan: ${dateVal} (Catatan: HANYA gunakan tanggal, JANGAN masukkan jam/pukul dalam narasi)
+- Target Hasil Kerja (SKP): ${selectedHkText}
+- Rencana Aksi: ${raVal ? raVal : '(Tidak ditentukan / bersifat fleksibel)'}
+- Lokasi / Forum / Pihak Terlibat: ${location || 'Lingkungan Kantor Kecamatan Situraja'}
+- Catatan Aktivitas / Poin Kegiatan / Rapat: ${points || 'Mengikuti rangkaian kegiatan/rapat kerja rutin sampai dengan selesai'}
+- Bukti Output Fisik: ${outputDoc || 'Dokumentasi/Laporan pelaksanaan tugas'}
+- Kendala & Solusi: ${obstacles || 'Tidak ada kendala berarti'}`;
+
+            if (hasOptional && optionalTitle) {
+                userQuery += `\n- TAMBAHAN KEGIATAN OPSIONAL/INSIDENTAL: ${optionalTitle}. Detail: ${optionalDesc}`;
+            }
+
+            const apiKey = ""; 
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`;
+
+            const payload = {
+                contents: [{ parts: [{ text: userQuery }] }],
+                systemInstruction: { parts: [{ text: systemPrompt }] }
+            };
+
+            try {
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const result = await response.json();
+                const text = result.candidates?.[0]?.content?.parts?.[0]?.text;
+
+                if (text) {
+                    document.getElementById('narrative-output').value = text.trim();
+                    showToast('Narasi LHK berhasil digenerasi oleh AI!');
+                } else {
+                    document.getElementById('narrative-output').value = generateFallbackNarrative(userName, section, selectedHkText, raVal, location, points);
+                    showToast('Menggunakan format narasi standar.');
+                }
+            } catch (err) {
+                console.error('Gemini API Error:', err);
+                document.getElementById('narrative-output').value = generateFallbackNarrative(userName, section, selectedHkText, raVal, location, points);
+                showToast('Generasi lokal (Offline/Fallback Mode)');
+            } finally {
+                document.getElementById('ai-loading').classList.add('hidden');
+                document.getElementById('ai-output-container').classList.remove('opacity-40');
+            }
+        }
+
+        // Fallback narrative function
+        function generateFallbackNarrative(userName, section, hk, ra, location, points) {
+            const raText = ra ? `khususnya dalam rangka pelaksanaan Rencana Aksi "${ra}"` : 'guna mendukung pelaksanaan tugas pokok dan fungsi bulanan';
+            const detailPoints = points ? `Adapun hasil utama pelaksanaan meliputi: ${points.replace(/\n/g, ', ')}.` : 'Kegiatan tersebut berlangsung secara tertib dan lancar sebagai bentuk pertanggungjawaban pelaksanaan kinerja ASN.';
+            
+            return `Pada hari ini, telah dilaksanakan rangkaian aktivitas tugas kedinasan oleh ${userName} selaku pegawai pada ${section} Kecamatan Situraja. Pelaksanaan kegiatan ini bertempat di ${location || 'wilayah kerja Kecamatan Situraja'} ${raText} untuk pencapaian Hasil Kerja "${hk}".\n\n${detailPoints} Seluruh berkas pendukung dan dokumentasi pelaksanaan tugas telah disiapkan sebagai kelengkapan laporan kinerja.`;
+        }
+
+        // Format Tone adjustment
+        function formatTone(type) {
+            const outputArea = document.getElementById('narrative-output');
+            let currentText = outputArea.value;
+            if (!currentText || currentText.startsWith('Hasil narasi')) return;
+
+            if (type === 'ringkas') {
+                outputArea.value = currentText.replace(/\n\n/g, ' ').substring(0, 350) + '... (Telah diringkas)';
+                showToast('Format diubah ke mode ringkas');
+            } else {
+                showToast('Kembalikan ke versi narasi lengkap');
+            }
+        }
+
+        /*
+         * Fixed Reliable Clipboard Copy
+         */
+        function copyNarrative() {
+            const outputEl = document.getElementById('narrative-output');
+            const text = outputEl.value;
+            if (!text || text.startsWith('Hasil narasi')) {
+                showToast('Belum ada narasi untuk disalin!');
+                return;
+            }
+
+            // Directly select output textarea to guarantee iframe copy execution
+            outputEl.focus();
+            outputEl.select();
+            outputEl.setSelectionRange(0, 99999);
+
+            try {
+                const successful = document.execCommand('copy');
+                if (successful) {
+                    showToast('Narasi LHK berhasil disalin! Silakan paste ke e-Kinerja / Word.');
+                } else {
+                    showToast('Gagal menyalin otomatis, gunakan Ctrl+C / Cmd+C.');
+                }
+            } catch (err) {
+                showToast('Pilih teks lalu tekan Ctrl+C untuk menyalin.');
+            }
+        }
+
+        // Save LHK to History
+        function saveToHistory() {
+            const narrative = document.getElementById('narrative-output').value;
+            if (!narrative || narrative.startsWith('Hasil narasi')) {
+                showToast('Silakan bentuk narasi terlebih dahulu sebelum menyimpan!');
+                return;
+            }
+
+            const report = {
+                id: 'lhk_' + Date.now(),
+                date: document.getElementById('activity-date').value,
+                time: document.getElementById('activity-time').value,
+                user: document.getElementById('user-name').value,
+                section: document.getElementById('user-section').value,
+                hasilKerja: document.getElementById('select-hasil-kerja').selectedOptions[0]?.text || '-',
+                rencanaAksi: document.getElementById('select-rencana-aksi').value || '(Opsional/Kosong)',
+                narrative: narrative
+            };
+
+            historyData.unshift(report);
+            localStorage.setItem('situraja_history_data', JSON.stringify(historyData));
+            renderHistoryList();
+            showToast('Laporan LHK berhasil disimpan ke Riwayat!');
+        }
+
+        // Render History List
+        function renderHistoryList() {
+            const container = document.getElementById('history-list');
+            container.innerHTML = '';
+
+            if (historyData.length === 0) {
+                container.innerHTML = `<div class="text-center py-8 text-slate-400 text-sm">Belum ada riwayat laporan yang tersimpan.</div>`;
+                return;
+            }
+
+            historyData.forEach(item => {
+                const card = document.createElement('div');
+                card.className = "bg-slate-50 border border-slate-200 rounded-xl p-4 space-y-2 hover:border-brand-300 transition-all";
+                card.innerHTML = `
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <span class="text-xs bg-brand-100 text-brand-700 font-bold px-2.5 py-0.5 rounded-md">${item.section}</span>
+                            <h4 class="font-bold text-slate-800 text-sm mt-1">${item.hasilKerja}</h4>
+                            <p class="text-xs text-slate-500">${item.user} • ${item.date} (${item.time})</p>
+                        </div>
+                        <button onclick="deleteHistoryItem('${item.id}')" class="text-slate-400 hover:text-rose-600 text-xs p-1"><i class="fa-solid fa-trash"></i></button>
+                    </div>
+                    <p class="text-xs text-slate-600 line-clamp-2 italic bg-white p-2.5 rounded-lg border border-slate-100">"${item.narrative}"</p>
+                    <div class="flex justify-end gap-2 pt-1">
+                        <button onclick="copyTextDirect('${escapeHtml(item.narrative)}')" class="text-xs bg-white border border-slate-300 hover:bg-slate-100 px-3 py-1 rounded-md text-slate-700 font-medium"><i class="fa-regular fa-copy me-1"></i> Salin Narasi</button>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function deleteHistoryItem(id) {
+            historyData = historyData.filter(h => h.id !== id);
+            localStorage.setItem('situraja_history_data', JSON.stringify(historyData));
+            renderHistoryList();
+            showToast('Data riwayat dihapus.');
+        }
+
+        function clearHistory() {
+            if (confirm('Apakah Anda yakin ingin menghapus seluruh riwayat laporan?')) {
+                historyData = [];
+                localStorage.removeItem('situraja_history_data');
+                renderHistoryList();
+                showToast('Seluruh riwayat dibersihkan.');
+            }
+        }
+
+        function escapeHtml(str) {
+            return str.replace(/'/g, "\\'").replace(/"/g, '&quot;');
+        }
+
+        function copyTextDirect(str) {
+            const tempInput = document.createElement('textarea');
+            tempInput.value = str;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempInput);
+            showToast('Narasi dari riwayat berhasil disalin!');
+        }
+
+        // Print Report Logic
+        function printReport() {
+            const narrative = document.getElementById('narrative-output').value;
+            if (!narrative || narrative.startsWith('Hasil narasi')) {
+                showToast('Generasi narasi terlebih dahulu sebelum mencetak!');
+                return;
+            }
+
+            document.getElementById('print-user').textContent = document.getElementById('user-name').value || '-';
+            document.getElementById('print-section').textContent = document.getElementById('user-section').value || '-';
+            document.getElementById('print-datetime').textContent = `${document.getElementById('activity-date').value} (${document.getElementById('activity-time').value})`;
+            document.getElementById('print-hasilkerja').textContent = document.getElementById('select-hasil-kerja').selectedOptions[0]?.text || '-';
+            document.getElementById('print-rencanaaksi').textContent = document.getElementById('select-rencana-aksi').value || '(Opsional)';
+            document.getElementById('print-location').textContent = document.getElementById('activity-location').value || '-';
+            document.getElementById('print-narrative').innerHTML = narrative.replace(/\n/g, '<br>');
+            
+            document.getElementById('print-today-date').textContent = new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+            document.getElementById('print-sign-user').textContent = document.getElementById('user-name').value || 'Pegawai Pelapor';
+
+            window.print();
+        }
+
+        /*
+         * Master Data Management & Edit Functions
+         */
+        function renderMasterTable() {
+            const filter = document.getElementById('master-filter-section').value;
+            const tbody = document.getElementById('master-table-body');
+            tbody.innerHTML = '';
+
+            const list = filter === 'ALL' ? masterData : masterData.filter(m => m.section === filter);
+
+            if (list.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" class="px-4 py-6 text-center text-slate-400 text-xs">Belum ada data master untuk kategori ini.</td></tr>`;
+                return;
+            }
+
+            list.forEach((item, index) => {
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-slate-50/80 transition-colors";
+
+                const raItems = item.rencanaAksi.map(ra => `<li class="text-xs text-slate-600 mb-1">• ${ra}</li>`).join('');
+
+                tr.innerHTML = `
+                    <td class="px-4 py-3 text-xs font-bold text-slate-400">${index + 1}</td>
+                    <td class="px-4 py-3 text-xs font-semibold text-brand-700">${item.section}</td>
+                    <td class="px-4 py-3 text-xs font-bold text-slate-800">${item.hasilKerja}</td>
+                    <td class="px-4 py-3"><ul class="m-0 p-0 text-xs">${raItems}</ul></td>
+                    <td class="px-4 py-3 text-center">
+                        <div class="flex items-center justify-center gap-2">
+                            <button onclick="openEditMasterModal('${item.id}')" title="Edit Rencana Aksi & Master" class="bg-amber-50 hover:bg-amber-100 text-amber-700 text-xs px-2.5 py-1 rounded-lg font-semibold transition-colors border border-amber-200 flex items-center gap-1">
+                                <i class="fa-solid fa-pen-to-square"></i> Edit
+                            </button>
+                            <button onclick="deleteMaster('${item.id}')" title="Hapus Master" class="bg-rose-50 hover:bg-rose-100 text-rose-600 text-xs px-2 py-1 rounded-lg font-semibold transition-colors border border-rose-200">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function openAddMasterModal() {
+            document.getElementById('modal-master-title').textContent = "Tambah Data Master SKP Baru";
+            document.getElementById('modal-edit-id').value = "";
+            document.getElementById('modal-hasil-kerja').value = "";
+            document.getElementById('modal-rencana-aksi').value = "";
+            document.getElementById('modal-master').classList.remove('hidden');
+        }
+
+        function openEditMasterModal(id) {
+            const item = masterData.find(m => m.id === id);
+            if (!item) return;
+
+            document.getElementById('modal-master-title').textContent = "Edit Hasil Kerja & Rencana Aksi";
+            document.getElementById('modal-edit-id').value = item.id;
+            document.getElementById('modal-section').value = item.section;
+            document.getElementById('modal-hasil-kerja').value = item.hasilKerja;
+            document.getElementById('modal-rencana-aksi').value = item.rencanaAksi ? item.rencanaAksi.join('\n') : '';
+
+            document.getElementById('modal-master').classList.remove('hidden');
+        }
+
+        function closeAddMasterModal() {
+            document.getElementById('modal-master').classList.add('hidden');
+        }
+
+        function saveNewMaster() {
+            const editId = document.getElementById('modal-edit-id').value;
+            const section = document.getElementById('modal-section').value;
+            const hk = document.getElementById('modal-hasil-kerja').value.trim();
+            const raRaw = document.getElementById('modal-rencana-aksi').value.trim();
+
+            if (!hk) {
+                alert('Mohon isi Hasil Kerja Utama!');
+                return;
+            }
+
+            // Split action plan lines by newline or comma
+            const raArray = raRaw ? raRaw.split(/\n|,/).map(s => s.trim()).filter(s => s.length > 0) : [];
+
+            if (editId) {
+                // Update existing item
+                const index = masterData.findIndex(m => m.id === editId);
+                if (index !== -1) {
+                    masterData[index].section = section;
+                    masterData[index].hasilKerja = hk;
+                    masterData[index].rencanaAksi = raArray;
+                    showToast('Data master & Rencana Aksi berhasil diperbarui!');
+                }
+            } else {
+                // Insert new item
+                const newItem = {
+                    id: 'm_' + Date.now(),
+                    section: section,
+                    hasilKerja: hk,
+                    rencanaAksi: raArray
+                };
+                masterData.push(newItem);
+                showToast('Data master berhasil ditambahkan!');
+            }
+
+            localStorage.setItem('situraja_master_data', JSON.stringify(masterData));
+
+            renderMasterTable();
+            updateMasterOptions();
+            closeAddMasterModal();
+        }
+
+        function deleteMaster(id) {
+            if (confirm('Hapus data master SKP ini?')) {
+                masterData = masterData.filter(m => m.id !== id);
+                localStorage.setItem('situraja_master_data', JSON.stringify(masterData));
+                renderMasterTable();
+                updateMasterOptions();
+                showToast('Data master berhasil dihapus.');
+            }
+        }
+
+        // Toast Notification System
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            const toastMsg = document.getElementById('toast-msg');
+
+            toastMsg.textContent = message;
+            toast.classList.remove('translate-y-20', 'opacity-0');
+
+            setTimeout(() => {
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 3200);
+        }
+    </script>
+</body>
+</html>
